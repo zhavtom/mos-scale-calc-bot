@@ -22,6 +22,10 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
 
     result = []
 
+    if edo > 313:
+        await ctx.send("数値が大きすぎます。")
+        return
+
     c = int(tonics)
     d = int(edo)
     lim = int(limit)
