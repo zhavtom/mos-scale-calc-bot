@@ -41,7 +41,7 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
             if y.is_integer() and y > 0 and y/x < lim and y/x > 1/lim:
                 result.append([a, b, x, int(y)])
 
-    output = "{}EDO, {} tonics の計算結果:\n```\n| a | b | x | y |\n|---|---|---|---|\n".format(tonics, edo)
+    output = "{} tonics, {}EDO の計算結果:\n```\n| a | b | x | y |\n|---|---|---|---|\n".format(tonics, edo)
     for row in result:
         for col in row:
             output += "|{: 3}".format(col)
