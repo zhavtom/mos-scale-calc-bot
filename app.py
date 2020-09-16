@@ -24,10 +24,6 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
 
     c = int(tonics)
     d = int(edo)
-
-    if d > 235:
-        await ctx.send("数値が大きすぎます。")
-        return
     
     lim = int(limit)
     if c == 0 or c > d or d == 0:
@@ -52,8 +48,13 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
             output += "|{:3}".format(col)
         output += "|\n|---|---|---|---|\n"
     output += "```"
-    await ctx.send(output)
 
+    if len(output) > 2000:
+        await ctx.send("数値が大きすぎます。csvファイルのみ出力します。")
+        export = "csv"
+    else:
+        await ctx.send(output)
+    
     if export == "csv":
         buffer = io.StringIO()
         writer = csv.writer(buffer)
