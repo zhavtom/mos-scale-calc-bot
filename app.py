@@ -25,7 +25,7 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
     c = int(tonics)
     d = int(edo)
 
-    if d > 313:
+    if d > 235:
         await ctx.send("数値が大きすぎます。")
         return
     
@@ -49,7 +49,7 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
     output = "{} tonics, {}EDO の計算結果:\n```\n| a | b | x | y |\n|---|---|---|---|\n".format(tonics, edo)
     for row in result:
         for col in row:
-            output += "|{: 3}".format(col)
+            output += "|{:3}".format(col)
         output += "|\n|---|---|---|---|\n"
     output += "```"
     await ctx.send(output)
