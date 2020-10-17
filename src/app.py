@@ -4,21 +4,17 @@ from discord import File
 from discord.ext import commands
 import csv
 
-
 TOKEN = os.environ["MOS_CALC_BOT_TOKEN"]
 
 csv_path = "data/temp.csv"
 
 bot = commands.Bot(command_prefix="m.")
 
-
-@bot.event
 async def on_ready():
     print("bot ready")
 
-
 @bot.command()
-async def calc(ctx, edo="", tonics="7", export="", limit="8"):
+async def calc(ctx, edo="", tonics="7", limit="8", export=""):
 
     result = []
 
@@ -39,7 +35,8 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
             if x > d:
                 break
             y = (d - a*x) / b
-            if y.is_integer() and y > 0 and y/x < lim and y/x > 1/lim:
+            ratio = y/x
+            if y.is_integer() and y > 0 and ratio < lim and ratio > 1/lim:
                 result.append([a, b, x, int(y)])
 
     output = "{} tonics, {}EDO の計算結果:\n```\n| a | b | x | y |\n|---|---|---|---|\n".format(tonics, edo)
@@ -50,7 +47,7 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
     output += "```"
 
     if len(output) > 2000:
-        await ctx.send("数値が大きすぎます。csvファイルのみ出力します。")
+        await ctx.send("文字数制限のため、csvファイルのみ出力します。")
         export = "csv"
     else:
         await ctx.send(output)
@@ -60,10 +57,9 @@ async def calc(ctx, edo="", tonics="7", export="", limit="8"):
         writer = csv.writer(buffer)
         writer.writerow(["a", "b", "x", "y"])
         writer.writerows(result)
-        await ctx.send(file=File(io.BytesIO(buffer.getvalue().encode("utf-8")), "mos_{}edo_{}tonics.csv".format(edo, tonics)))
+        await ctx.send(file=File(io.BytesIO(buffer.getvalue().encode("utf-8")), "mos_{}tonics_{}edo.csv".format(tonics, edo)))
 
 
-@bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.BadArgument):
         await ctx.send("引数を確認してください。")
@@ -71,4 +67,6 @@ async def on_command_error(ctx, error):
         await ctx.send("そのコマンドは存在しません。")
 
 
+bot.add_listener(on_ready)
+bot.add_listener(on_command_error)
 bot.run(TOKEN)
